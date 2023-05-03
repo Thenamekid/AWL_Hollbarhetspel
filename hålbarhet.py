@@ -8,6 +8,15 @@ from pathlib import Path
 root = Tk()
 root.attributes("-fullscreen", True)  # Set window to full screen
 
+# Define a global variable to keep track of the currently hovered widget
+hovered_widget = None
+
+# Define a custom class that inherits from tk.Label
+class CardLabel(tk.Label):
+    def __init__(self, master=None, filename=None, **kwargs):
+        super().__init__(master, **kwargs)
+        self.filename = filename
+
 # Define a function to handle mouse button press event
 def on_card_press(event):
     # Store the x and y coordinates of the mouse pointer
@@ -20,10 +29,18 @@ def on_card_press(event):
 
 # Define a function to handle mouse motion event
 def on_card_motion(event):
+    global hovered_widget
+    
     # Calculate the new x and y coordinates of the card
     widget = event.widget
     x = widget.winfo_x() - widget.startX + event.x
     y = widget.winfo_y() - widget.startY + event.y
+
+    # Check if the mouse is over the widget
+    if (x >= 0 and x <= card_width) and (y >= 0 and y <= card_height):
+        hovered_widget = widget
+    else:
+        hovered_widget = None
 
     # Move the card to the new coordinates
     widget.place(x=x, y=y)
@@ -33,6 +50,49 @@ def on_card_release(event):
     # Do nothing for now
     pass
 
+# Define global variables
+selected_filenames = []
+
+# Define a function to handle key press event
+def on_key_press(event):
+    global hovered_widget, selected_filenames
+    
+    # Check if the space bar is pressed
+    if event.keysym == "space":
+        # Check if there is a hovered widget
+        if hovered_widget is not None:
+            # Get the index of the card label widget
+            index = card_labels.index(hovered_widget)
+
+            # Get the filename of the corresponding card image
+            filename = random_filenames[index]
+
+            # Print the name of the card
+            print(filename)
+
+            # Add or remove the filename to/from the selected_filenames list
+            if filename in selected_filenames:
+                selected_filenames.remove(filename)
+                print("Removed from selection.")
+                hovered_widget.config(borderwidth=0, highlightthickness=0)
+            else:
+                selected_filenames.append(filename)
+                print("Added to selection.")
+                hovered_widget.config(highlightbackground="red", highlightthickness=2)
+
+            # Print the current selection
+            print("Selected filenames:", selected_filenames)
+            
+# Define a function to handle mouse enter event
+def on_card_enter(event):
+    global hovered_widget
+    hovered_widget = event.widget
+
+# Define a function to handle mouse leave event
+def on_card_leave(event):
+    global hovered_widget
+    hovered_widget = None
+    
 # set the path to the directory containing the card image folders
 card_dir = './spel_kort'
 
@@ -84,62 +144,62 @@ card_x = screen_width // 2 - (card_width * 4) // 2
 card_y = screen_height - (card_height + 200)
 
 # create a canvas widget
-canvas1 = tk.Canvas(width=card_width, height=card_height)
-canvas1.pack()
+safe1 = tk.Canvas(width=card_width, height=card_height)
+safe1.pack()
 
 # draw a colored rectangle on the canvas
-canvas1.create_rectangle(0, 0, card_width, card_height, fill="#41a437")
-canvas1.place(x=1100, y=20)
-
+safe1.create_rectangle(0, 0, card_width, card_height, fill="#41a437")
+safe1.place(x=1100, y=20)
+        
 # create a canvas widget
-canvas2 = tk.Canvas(width=card_width, height=card_height)
-canvas2.pack()
+safe2 = tk.Canvas(width=card_width, height=card_height)
+safe2.pack()
 
 # draw a colored rectangle on the canvas
-canvas2.create_rectangle(0, 0, card_width, card_height, fill="#41a437")
-canvas2.place(x=100, y=20)
+safe2.create_rectangle(0, 0, card_width, card_height, fill="#41a437")
+safe2.place(x=100, y=20)
 
 
 # create a canvas widget
-canvas3 = tk.Canvas(width=card_width, height=card_height)
-canvas3.pack()
+safe3 = tk.Canvas(width=card_width, height=card_height)
+safe3.pack()
 
 # draw a colored rectangle on the canvas
-canvas3.create_rectangle(0, 0, card_width, card_height, fill="#009fe3")
-canvas3.place(x=1100, y=200)
+safe3.create_rectangle(0, 0, card_width, card_height, fill="#009fe3")
+safe3.place(x=1100, y=200)
 
 # create a canvas widget
-canvas4 = tk.Canvas(width=card_width, height=card_height)
-canvas4.pack()
+safe4 = tk.Canvas(width=card_width, height=card_height)
+safe4.pack()
 
 # draw a square divided into two colors on the canvas
-canvas4.create_polygon(0, 0, 0, 180, 120, 0, fill="#41a437") # top left triangle
-canvas4.create_polygon(0, 180, 120, 0, 120, 180, fill="#009fe3") # bottom right triangle
-canvas4.place(x=100, y=200)
+safe4.create_polygon(0, 0, 0, 180, 120, 0, fill="#41a437") # top left triangle
+safe4.create_polygon(0, 180, 120, 0, 120, 180, fill="#009fe3") # bottom right triangle
+safe4.place(x=100, y=200)
 
 # create a canvas widget
-canvas5 = tk.Canvas(width=card_width, height=card_height)
-canvas5.pack()
+safe5 = tk.Canvas(width=card_width, height=card_height)
+safe5.pack()
 
 # draw a colored rectangle on the canvas
-canvas5.create_rectangle(0, 0, card_width, card_height, fill="#e6007c")
-canvas5.place(x=1100, y=380)
+safe5.create_rectangle(0, 0, card_width, card_height, fill="#e6007c")
+safe5.place(x=1100, y=380)
 
 # create a canvas widget
-canvas6 = tk.Canvas(width=card_width, height=card_height)
-canvas6.pack()
+safe6 = tk.Canvas(width=card_width, height=card_height)
+safe6.pack()
 
 # draw a colored rectangle on the canvas
-canvas6.create_rectangle(0, 0, card_width, card_height, fill="#009fe3")
-canvas6.place(x=100, y=380)
+safe6.create_rectangle(0, 0, card_width, card_height, fill="#009fe3")
+safe6.place(x=100, y=380)
 
 # create a canvas widget
-canvas7 = tk.Canvas(width=card_width, height=card_height)
-canvas7.pack()
+safe7 = tk.Canvas(width=card_width, height=card_height)
+safe7.pack()
 
 # draw a colored rectangle on the canvas
-canvas7.create_rectangle(0, 0, card_width, card_height, fill="#ffee00")
-canvas7.place(x=100, y=560)
+safe7.create_rectangle(0, 0, card_width, card_height, fill="#ffee00")
+safe7.place(x=100, y=560)
 
 # create a list to hold the card images and labels
 card_images = []
@@ -181,6 +241,12 @@ def close_card_copy(event):
         copy_label = None
         root.unbind("<Button-3>")
 
+# shuffle the card images
+random.shuffle(card_images)
+
+# shuffle the list of filenames
+random.shuffle(random_filenames)
+
 # load each selected card image into a PIL Image object and then a tkinter PhotoImage object
 for filename in random_filenames:
     image = Image.open(os.path.join(card_dir, filename))
@@ -188,21 +254,19 @@ for filename in random_filenames:
     photo = ImageTk.PhotoImage(image)
     card_images.append(photo)
 
-# shuffle the card images
-random.shuffle(card_images)
-
 # create a tkinter Label widget for each card image and display it in the window
 for i in range(8):
     label = tk.Label(root, image=card_images[i], bg="black")
     label.place(x=card_x + i % 4 * card_width, y=card_y + i // 4 * card_height)
     card_labels.append(label)
-    # bind the show_card_copy function to the <Button-3> event of each card label
     label.bind("<Button-3>", show_card_copy)
-    # bind the on_card_press function to the <Button-1> event of each card label
     label.bind("<Button-1>", on_card_press)
-    # bind the on_card_motion function to the <B1-Motion> event of each card label
     label.bind("<B1-Motion>", on_card_motion)
-    
+    label.bind("<Enter>", on_card_enter)
+    label.bind("<Leave>", on_card_leave)
+    label.config(borderwidth=0)
+    root.bind("<Key>", on_key_press)
+
 # Load image and create a background canvas to display it
 image_bg = Image.open("svart bg Spelplan.jpg")
 width, height = root.winfo_screenwidth() // 2, root.winfo_screenheight() // 2
@@ -212,70 +276,88 @@ canvas_bg = Canvas(root, width=width, height=height, borderwidth=0, highlightthi
 canvas_bg.create_image(width/2, height/2, image=photo_bg)
 canvas_bg.pack()
 
+press_count = 0
+
 def reset_cards():
-    global random_filenames, card_labels
+    global random_filenames, card_labels, press_count, card_images, selected_filenames
+    print("Selected filenames:", selected_filenames)
+    press_count += 1
+    if reset_button["bg"] == "green":
+        reset_button.configure(bg="yellow")
+    elif reset_button["bg"] == "yellow":
+        reset_button.configure(bg="red")
+    else:
+        reset_button.place_forget()
 
-    # loop over all seven canvas widgets
-    for i in range(1, 8):
-        # get the coordinates of the canvas widget
-        canvas = globals()['canvas{}'.format(i)]
-        canvas_bbox = canvas.bbox(tk.ALL)
+    # If selected_filenames is not empty, save its contents
+    if selected_filenames:
+        saved_selected_filenames = selected_filenames.copy()
+    else:
+        saved_selected_filenames = []
 
-        # remove existing card labels that are not touching the canvas
-        new_card_labels = []
-        for label in card_labels:
-            # get the coordinates of the bounding box of the label
-            label_bbox = label.bbox(tk.ALL)
+    # initialize card_images variable
+    card_images = []
 
-            # check if the label is overlapping with the canvas widget
-            if label_bbox and canvas_bbox and label_bbox[0] < canvas_bbox[2] and label_bbox[2] > canvas_bbox[0] and label_bbox[1] < canvas_bbox[3] and label_bbox[3] > canvas_bbox[1]:
-                # add the label to the list of new card labels
-                new_card_labels.append(label)
-            else:
-                # keep the image attached to the label and remove the label from the canvas
-                card_images.remove(label["image"])
-                label.destroy()
-                card_labels.remove(label)
-        card_labels = new_card_labels
+    # remove all card labels from the window
+    for label in card_labels:
+        if label["image"] in card_images:
+            card_images.remove(label["image"])
+        label.destroy()
+    card_labels = []
 
-    # create a list of available card filenames excluding the ones already selected
-    available_filenames = card_filenames.copy()
-    available_filenames = [filename for filename in available_filenames if filename not in random_filenames]
+    # create an empty list to store all the card filenames
+    card_filenames = []
 
-    # create a dictionary to store the number of available images for each color
-    available_colors = {'Blue': 0, 'Green': 0, 'Pink': 0, 'Yellow': 0}
-    for filename in available_filenames:
-        for color in available_colors:
-            if color in filename:
-                available_colors[color] += 1
+    # create a dictionary to store the number of images in each folder
+    num_images_dict = {}
 
-    # check if there are enough available filenames for each required color
-    for color, count in names_to_include.items():
-        if available_colors[color] < count:
-            raise ValueError(f"Not enough filenames with '{color}' in their name.")
+    # loop through each folder and add the filenames to the list
+    for foldername in os.listdir(card_dir):
+        folderpath = os.path.join(card_dir, foldername)
+        if os.path.isdir(folderpath):
+            num_images = len([filename for filename in os.listdir(folderpath) if filename.endswith(".jpg")])
+            num_images_dict[foldername] = num_images
+            card_filenames.extend([os.path.join(foldername, filename) for filename in os.listdir(folderpath) if filename.endswith(".jpg")])
 
-    # randomly select the required number of filenames for each color
+    # create lists for each name that must appear
+    blue_filenames = [filename for filename in card_filenames if "Blue" in filename]
+    green_filenames = [filename for filename in card_filenames if "Green" in filename]
+    yellow_filenames = [filename for filename in card_filenames if "Yellow" in filename]
+    pink_filenames = [filename for filename in card_filenames if "Pink" in filename]
+
+    # randomly shuffle the filenames for each color
+    random.shuffle(blue_filenames)
+    random.shuffle(green_filenames)
+    random.shuffle(yellow_filenames)
+    random.shuffle(pink_filenames)
+
+    # select the required number of filenames for each color
     selected_filenames = []
-    for color, count in names_to_include.items():
-        matching_filenames = [filename for filename in available_filenames if color in filename]
-        selected_filenames += random.sample(matching_filenames, count)
+    selected_filenames.extend(blue_filenames[:2])
+    selected_filenames.extend(green_filenames[:2])
+    selected_filenames.extend(yellow_filenames[:1])
+    selected_filenames.extend(pink_filenames[:1])
 
-    # select the remaining filenames at random
-    remaining_filenames = [filename for filename in available_filenames if filename not in selected_filenames]
-    selected_filenames += random.sample(remaining_filenames, 8 - len(selected_filenames))
+    # add 2 more random filenames to complete the list of 8
+    remaining_filenames = [filename for filename in card_filenames if filename not in selected_filenames]
+    random.shuffle(remaining_filenames)
+    random_filenames = selected_filenames + remaining_filenames[:2]
+
+    # shuffle the card images
+    random.shuffle(card_images)
+
+    # shuffle the list of filenames
+    random.shuffle(random_filenames)
 
     # assign the new list of random filenames and create the new card images
-    random_filenames = selected_filenames
     for filename in random_filenames:
         image = Image.open(os.path.join(card_dir, filename))
         image = image.resize((card_width, card_height), Image.LANCZOS)
         photo = ImageTk.PhotoImage(image)
         card_images.append(photo)
 
-    # shuffle the card images
-    random.shuffle(card_images)
-
     # create new card labels and display them in the window
+    label = None
     for i in range(8):
         label = tk.Label(root, bg="black")
         label.place(x=card_x + i % 4 * card_width, y=card_y + i // 4 * card_height)
@@ -284,8 +366,54 @@ def reset_cards():
         label.bind("<Button-3>", show_card_copy)
         label.bind("<Button-1>", on_card_press)
         label.bind("<B1-Motion>", on_card_motion)
-        
-reset_button = tk.Button(root, text="Reset Cards", command=reset_cards, bg="gray", fg="white", bd=0, width=10, height=5)
+        label.bind("<Enter>", on_card_enter)
+        label.bind("<Leave>", on_card_leave)
+        label.config(borderwidth=0)
+        root.bind("<Key>", on_key_press)
+
+    # If saved_selected_filenames is not empty, restore its contents
+    if saved_selected_filenames:
+        selected_filenames = saved_selected_filenames.copy()
+        create_selected_card_pile(selected_filenames)
+
+# initialize selected_card_images and selected_card_labels variables
+selected_card_images = []
+selected_card_labels = []
+
+def create_selected_card_pile(selected_filenames):
+    global selected_card_labels, selected_card_images
+    selected_card_images = []
+    # remove all selected card labels from the window
+    for label in selected_card_labels:
+        if label["image"] in selected_card_images:
+            selected_card_images.remove(label["image"])
+        label.destroy()
+    selected_card_labels = []
+    # calculate the starting position of the first label
+    start_x = card_x
+    start_y = card_y - 400
+    # calculate the offset between each label
+    offset_x = card_width + 0
+    offset_y = card_height + 0
+    # create new selected card images and labels and display them in the window
+    for i, filename in enumerate(selected_filenames):
+        image = Image.open(os.path.join(card_dir, filename))
+        image = image.resize((card_width, card_height), Image.LANCZOS)
+        photo = ImageTk.PhotoImage(image)
+        selected_card_images.append(photo)
+        label = tk.Label(root, bg="black")
+        # calculate the position of the label based on the index and offset
+        label.place(x=start_x + i % 4 * offset_x, y=start_y + i // 4 * offset_y + 20)
+        label["image"] = photo
+        selected_card_labels.append(label)
+        label.bind("<Button-3>", show_card_copy)
+        label.bind("<Button-1>", on_card_press)
+        label.bind("<B1-Motion>", on_card_motion)
+        label.bind("<Enter>", on_card_enter)
+        label.bind("<Leave>", on_card_leave)
+        label.config(highlightbackground="darkred", highlightthickness=2, borderwidth=0)
+
+reset_button = tk.Button(root, text="Reset Cards", command=reset_cards, bg="green", fg="white", bd=0, width=10, height=5)
 reset_button.place(x=screen_width // 2 + 440, y=screen_height - 150)
 
 # start the tkinter main loop to display the window
